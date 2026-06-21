@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   Index,
 } from 'typeorm';
-import { BloodType, BloodComponentType, BloodBagStatus } from '../../common/enums';
+import { BloodType, BloodComponentType, BloodBagStatus } from '../../../common/enums';
 
 @Entity('blood_bags')
 @Index(['bagCode'], { unique: true })

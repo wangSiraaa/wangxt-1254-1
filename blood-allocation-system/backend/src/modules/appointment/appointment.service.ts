@@ -54,7 +54,7 @@ export class AppointmentService {
       status: AppointmentStatus.PENDING,
       crossMatchRequired:
         createDto.crossMatchRequired ??
-        this.configService.get<boolean>('CROSS_MATCH_REQUIRED', true),
+        this.configService.get<boolean>('CROSS_MATCH_REQUIRED') ?? true,
       items: createDto.items.map((item) =>
         this.appointmentItemRepository.create(item),
       ),
@@ -97,7 +97,7 @@ export class AppointmentService {
             .where('appt.appointmentNo LIKE :keyword', { keyword: `%${keyword}%` })
             .orWhere('appt.hospitalName LIKE :keyword', { keyword: `%${keyword}%` })
             .orWhere('appt.patientName LIKE :keyword', { keyword: `%${keyword}%` });
-        },
+        }),
       );
     }
 

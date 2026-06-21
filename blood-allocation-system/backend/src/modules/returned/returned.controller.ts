@@ -69,9 +69,8 @@ export class ReturnedController {
   @ApiOperation({ summary: '报废处理' })
   discard(
     @Param('id') id: string,
-    @Body('operator') operator: string,
-    @Body('reason') reason?: string,
+    @Body() body: { operator: string; reason?: string },
   ): Promise<ReturnedBlood> {
-    return this.returnedService.discard(id, operator, reason);
+    return this.returnedService.discard(id, body.operator, body.reason);
   }
 }

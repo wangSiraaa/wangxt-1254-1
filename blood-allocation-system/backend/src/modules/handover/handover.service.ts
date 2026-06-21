@@ -44,8 +44,8 @@ export class HandoverService {
   }
 
   private checkTemperatureRange(temperature: number): { normal: boolean; alert: boolean } {
-    const minTemp = this.configService.get<number>('COLD_CHAIN_MIN_TEMP', 2);
-    const maxTemp = this.configService.get<number>('COLD_CHAIN_MAX_TEMP', 6);
+    const minTemp = this.configService.get<number>('COLD_CHAIN_MIN_TEMP') ?? 2;
+    const maxTemp = this.configService.get<number>('COLD_CHAIN_MAX_TEMP') ?? 6;
     const normal = temperature >= minTemp && temperature <= maxTemp;
     return { normal, alert: !normal };
   }

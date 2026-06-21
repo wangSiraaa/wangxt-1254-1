@@ -10,10 +10,10 @@ import { ConfigService } from '@nestjs/config';
       useFactory: (configService: ConfigService) => {
         const Redis = require('ioredis');
         return new Redis({
-          host: configService.get('REDIS_HOST', 'localhost'),
-          port: configService.get<number>('REDIS_PORT', 6379),
+          host: configService.get('REDIS_HOST') ?? 'localhost',
+          port: configService.get<number>('REDIS_PORT') ?? 6379,
           password: configService.get('REDIS_PASSWORD') || undefined,
-          db: configService.get<number>('REDIS_DB', 0),
+          db: configService.get<number>('REDIS_DB') ?? 0,
         });
       },
       inject: [ConfigService],

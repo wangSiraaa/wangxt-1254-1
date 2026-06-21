@@ -83,7 +83,7 @@ export class BloodBagService {
     }
 
     if (expiringSoon) {
-      const warnDays = this.configService.get<number>('BAG_EXPIRE_WARN_DAYS', 7);
+      const warnDays = this.configService.get<number>('BAG_EXPIRE_WARN_DAYS') ?? 7;
       const warnDate = new Date();
       warnDate.setDate(warnDate.getDate() + warnDays);
       qb.andWhere('bag.expireDate <= :warnDate', { warnDate });
@@ -239,7 +239,7 @@ export class BloodBagService {
   }
 
   async getExpiringBags(): Promise<BloodBag[]> {
-    const warnDays = this.configService.get<number>('BAG_EXPIRE_WARN_DAYS', 7);
+    const warnDays = this.configService.get<number>('BAG_EXPIRE_WARN_DAYS') ?? 7;
     const warnDate = new Date();
     warnDate.setDate(warnDate.getDate() + warnDays);
 

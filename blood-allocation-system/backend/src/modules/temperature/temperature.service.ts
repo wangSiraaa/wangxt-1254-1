@@ -17,11 +17,11 @@ export class TemperatureService {
   ) {}
 
   private getMinTemp(): number {
-    return this.configService.get<number>('COLD_CHAIN_MIN_TEMP', 2);
+    return this.configService.get<number>('COLD_CHAIN_MIN_TEMP') ?? 2;
   }
 
   private getMaxTemp(): number {
-    return this.configService.get<number>('COLD_CHAIN_MAX_TEMP', 6);
+    return this.configService.get<number>('COLD_CHAIN_MAX_TEMP') ?? 6;
   }
 
   private determineStatus(temperature: number): TemperatureStatus {

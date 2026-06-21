@@ -97,7 +97,7 @@ export class AppointmentService {
             .where('appt.appointmentNo LIKE :keyword', { keyword: `%${keyword}%` })
             .orWhere('appt.hospitalName LIKE :keyword', { keyword: `%${keyword}%` })
             .orWhere('appt.patientName LIKE :keyword', { keyword: `%${keyword}%` });
-        }),
+        },
       );
     }
 

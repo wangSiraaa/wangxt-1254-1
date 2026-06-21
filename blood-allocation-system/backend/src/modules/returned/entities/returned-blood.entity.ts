@@ -85,6 +85,6 @@ export class ReturnedBlood {
   @Column({ name: 'created_by', type: 'varchar', length: 50, nullable: true })
   createdBy: string;
 
-  @Column({ name: 'updated_by', type: 'varchar', length: 50, nullable: true })
+  @Column({ name: 'updated_by', type: 'varchar', length:  50, nullable: true })
   updatedBy: string;
 }

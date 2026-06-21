@@ -95,6 +95,7 @@ export class HandoverService {
             scanTime: new Date(),
             temperatureReceived: scanned.temperatureReceived ?? null,
             temperatureAlert: tempAlert,
+            remark: scanned.remark,
           }),
         );
       }
@@ -156,6 +157,7 @@ export class HandoverService {
       scanOperator: dto.operator,
       temperatureReceived: dto.temperature ?? null,
       temperatureAlert: tempCheck.alert,
+      remark: dto.remark,
     });
 
     const savedItem = await this.handoverItemRepository.save(item);

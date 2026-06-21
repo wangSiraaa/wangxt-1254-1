@@ -10,6 +10,10 @@ class ScanBagItemDto {
   @IsOptional()
   @IsNumber()
   temperatureReceived?: number;
+
+  @IsOptional()
+  @IsString()
+  remark?: string;
 }
 
 export class CreateHandoverDto {
@@ -64,6 +68,10 @@ export class ScanBagDto {
   @IsNotEmpty()
   @IsString()
   operator: string;
+
+  @IsOptional()
+  @IsString()
+  remark?: string;
 }
 
 export class DispatchHandoverDto {

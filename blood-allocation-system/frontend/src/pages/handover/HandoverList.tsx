@@ -49,6 +49,10 @@ const HandoverList = () => {
   const [receiveModalOpen, setReceiveModalOpen] = useState(false);
   const [receiveItems, setReceiveItems] = useState<any[]>([]);
   const [receiveForm] = Form.useForm();
+  const [scanModalOpen, setScanModalOpen] = useState(false);
+  const [scanLoading, setScanLoading] = useState(false);
+  const [scanHandoverId, setScanHandoverId] = useState('');
+  const [scanForm] = Form.useForm();
 
   const loadData = async () => {
     try {
@@ -168,32 +172,26 @@ const HandoverList = () => {
   };
 
   const handleScanBag = (id: string) => {
-    Modal.confirm({
-      title: '扫码添加血袋',
-      content: (
-        <Form layout="vertical">
-          <Form.Item label="血袋编号" name="bagCode" rules={[{ required: true }]}>
-            <Input placeholder="扫描或输入血袋编号" prefix={<QrcodeOutlined />} />
-          </Form.Item>
-          <Form.Item label="当前温度(°C)" name="temperature">
-            <InputNumber min={-10} max={20} step={0.1} style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item label="操作人" name="operator" rules={[{ required: true }]}>
-            <Input />
-          </Form.Item>
-        </Form>
-      ),
-      onOk: async (values: any) => {
-        try {
-          await handoverApi.scanBag(id, values);
-          message.success('扫码添加成功');
-          showDetail(id);
-          loadData();
-        } catch (e: any) {
-          message.error(e.message);
-        }
-      },
-    });
+    setScanHandoverId(id);
+    scanForm.resetFields();
+    setScanModalOpen(true);
+  };
+
+  const handleScanSubmit = async () => {
+    try {
+      const values = await scanForm.validateFields();
+      setScanLoading(true);
+      await handoverApi.scanBag(scanHandoverId, values);
+      message.success('扫码添加成功');
+      setScanModalOpen(false);
+      showDetail(scanHandoverId);
+      loadData();
+    } catch (e: any) {
+      if (e?.errorFields) return;
+      message.error(e?.message || '扫码添加失败');
+    } finally {
+      setScanLoading(false);
+    }
   };
 
   return (
@@ -360,6 +358,11 @@ const HandoverList = () => {
                   render: (v) => (v ? dayjs(v).format('MM-DD HH:mm') : '-'),
                 },
                 {
+                  title: '扫码人',
+                  dataIndex: 'scanOperator',
+                  render: (v) => v || '-',
+                },
+                {
                   title: '接收温度',
                   dataIndex: 'temperatureReceived',
                   render: (v) => (v ? `${v}°C` : '-'),
@@ -373,6 +376,11 @@ const HandoverList = () => {
                   title: '接收状态',
                   dataIndex: 'accepted',
                   render: (v) => (v ? <Tag color="green">已接收</Tag> : <Tag color="red">拒收</Tag>),
+                },
+                {
+                  title: '交接备注',
+                  dataIndex: 'remark',
+                  render: (v) => v || '-',
                 },
                 { title: '拒收原因', dataIndex: 'rejectReason' },
               ]}
@@ -416,6 +424,10 @@ const HandoverList = () => {
           pagination={false}
           columns={[
             { title: '血袋编号', dataIndex: 'bagCode' },
+            {
+              title: '交接备注',
+              render: (_, r, i) => receiveItems[i].remark || '-',
+            },
             {
               title: '接收温度(°C)',
               dataIndex: 'temperatureReceived',
@@ -477,6 +489,30 @@ const HandoverList = () => {
             },
           ]}
         />
+      </Modal>
+
+      <Modal
+        title="扫码添加血袋"
+        open={scanModalOpen}
+        onCancel={() => setScanModalOpen(false)}
+        onOk={handleScanSubmit}
+        confirmLoading={scanLoading}
+        okText="扫码添加"
+      >
+        <Form form={scanForm} layout="vertical">
+          <Form.Item label="血袋编号" name="bagCode" rules={[{ required: true, message: '请输入血袋编号' }]}>
+            <Input placeholder="扫描或输入血袋编号" prefix={<QrcodeOutlined />} />
+          </Form.Item>
+          <Form.Item label="当前温度(°C)" name="temperature">
+            <InputNumber min={-10} max={20} step={0.1} style={{ width: '100%' }} />
+          </Form.Item>
+          <Form.Item label="操作人" name="operator" rules={[{ required: true, message: '请输入操作人' }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="交接备注" name="remark">
+            <Input.TextArea rows={2} placeholder="冷链交接备注（选填，如：包装完好/温度正常）" />
+          </Form.Item>
+        </Form>
       </Modal>
     </div>
   );

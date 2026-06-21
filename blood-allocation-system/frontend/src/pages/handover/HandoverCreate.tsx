@@ -39,6 +39,7 @@ const HandoverCreate = () => {
         {
           ...bag,
           scanTemperature: values.temperature,
+          scanRemark: values.remark,
         },
       ]);
       scanForm.resetFields();
@@ -67,6 +68,7 @@ const HandoverCreate = () => {
         scannedBags: scannedBags.map((b) => ({
           bagCode: b.bagCode,
           temperatureReceived: b.scanTemperature,
+          remark: b.scanRemark,
         })),
       };
       await handoverApi.create(payload);
@@ -154,12 +156,15 @@ const HandoverCreate = () => {
       </Card>
 
       <Card title="扫码添加血袋">
-        <Form form={scanForm} layout="inline" style={{ marginBottom: 16 }}>
+        <Form form={scanForm} layout="inline" style={{ marginBottom: 16 }} >
           <Form.Item name="bagCode" rules={[{ required: true, message: '请输入血袋编号' }]}>
             <Input placeholder="血袋编号" prefix={<QrcodeOutlined />} style={{ width: 240 }} />
           </Form.Item>
           <Form.Item name="temperature">
             <InputNumber placeholder="出库温度(°C)" min={-10} max={20} step={0.1} />
+          </Form.Item>
+          <Form.Item name="remark">
+            <Input.TextArea placeholder="交接备注（选填，如：包装完好/温度正常）" rows={1} style={{ width: 280 }} />
           </Form.Item>
           <Form.Item>
             <Space>
@@ -183,6 +188,11 @@ const HandoverCreate = () => {
             {
               title: '扫描温度(°C)',
               dataIndex: 'scanTemperature',
+              render: (v) => v || '-',
+            },
+            {
+              title: '交接备注',
+              dataIndex: 'scanRemark',
               render: (v) => v || '-',
             },
             {
